@@ -1,0 +1,50 @@
+/* Global contrast overrides to improve text visibility across the app */
+
+/* Ensure base text is dark for readability */
+body {
+  color: #0f172a; /* slate-900 */
+  background-color: #ffffff;
+}
+
+/* Darken commonly-used muted text utility classes from Tailwind */
+.text-slate-400 { color: #334155 !important; } /* slightly darker than slate-500 */
+.text-slate-500 { color: #0f172a !important; } /* slate-900 */
+.text-slate-300 { color: #475569 !important; } /* slate-600-ish */
+.text-slate-600 { color: #071130 !important; } /* extra dark for emphasis */
+
+/* Tweak indigo/light text colors common in hero/cta areas
+  NOTE: removed very-light text overrides to avoid low-contrast text on light backgrounds.
+  Use utility classes on dark backgrounds only. */
+
+/* Links and action text should be clearly visible */
+.text-indigo-600 { color: #3730a3 !important; } /* indigo-700-ish */
+.text-indigo-700 { color: #1e3a8a !important; }
+
+/* Buttons on light backgrounds: stronger contrast */
+.bg-indigo-50 { background-color: #eef2ff !important; }
+.bg-slate-50 { background-color: #f8fafc !important; }
+
+/* Muted placeholder / helper text */
+::placeholder { color: #64748b !important; opacity: 1 !important; }
+
+/* Make subtle borders slightly more visible */
+.border-slate-100 { border-color: rgba(15,23,42,0.06) !important; }
+.border-slate-200 { border-color: rgba(15,23,42,0.08) !important; }
+
+/* Ensure avatar initials are visible when a light bg is used */
+.avatar-initial-light { color: #0f172a !important; }
+
+/* Global utility: make all small, muted text slightly darker for accessibility */
+small, .muted, .text-muted { color: #475569 !important; }
+
+/* Increase contrast for cards with very light backgrounds */
+.glass, .card, .glass-rounded, .glass-rounded-3xl {
+  background-color: rgba(255,255,255,0.98) !important;
+  color: #0f172a !important;
+}
+
+/* Ensure nav and sidebar text is readable */
+.sidebar a, .sidebar .nav-item, .nav-link { color: #0f172a !important; }
+
+/* Make toast messages clear */
+.sonner_toast, .sonner_toast * { color: #0f172a !important; }
