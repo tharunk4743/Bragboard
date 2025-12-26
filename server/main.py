@@ -2,10 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 try:
-    # package-relative when used as a package
     from . import auth, notifications
 except Exception:
-    # direct import when running from Group-D/server directory
     import auth
     import notifications
 
