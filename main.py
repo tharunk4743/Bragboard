@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 import uuid
 import os
@@ -145,7 +145,7 @@ def create_initial_admin():
             id=str(uuid.uuid4()),
             email="tharun@gmail.com",
             full_name="Tharun Admin",
-            password="1234",
+            password="1234",  # dev-only: replace with hashed/ENV in production
             role="ADMIN",
         )
         db.add(admin)
@@ -175,8 +175,8 @@ class LoginPayload(BaseModel):
 class ShoutoutCreate(BaseModel):
     title: str
     content: str
-    author_id: str
-    recipient_ids: List[str] = []
+    # Do not accept author_id from client — use current_user
+    recipient_ids: List[str] = Field(default_factory=list)
 
 
 class ShoutoutUpdate(BaseModel):
@@ -406,11 +406,12 @@ def create_shoutout(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    # Use the authenticated user as the author — do not trust client author_id
     s = Shoutout(
         id=str(uuid.uuid4()),
         title=payload.title,
         content=payload.content,
-        author_id=payload.author_id,
+        author_id=current_user.id,
     )
     db.add(s)
     db.commit()
@@ -454,6 +455,10 @@ def update_shoutout(
     if not s:
         raise HTTPException(status_code=404, detail="Not found")
 
+    # Only author or ADMIN can update
+    if current_user.id != s.author_id and current_user.role != "ADMIN":
+        raise HTTPException(status_code=403, detail="Forbidden")
+
     if payload.title is not None:
         s.title = payload.title
     if payload.content is not None:
@@ -487,14 +492,19 @@ def delete_shoutout(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    s = db.query(Shoutout).filter(Shoutout.id == shoutout_id).first()
+    if not s:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    # Only author or ADMIN can delete
+    if current_user.id != s.author_id and current_user.role != "ADMIN":
+        raise HTTPException(status_code=403, detail="Forbidden")
+
     db.execute(
         shoutout_recipient.delete().where(
             shoutout_recipient.c.shoutout_id == shoutout_id
         )
     )
-    s = db.query(Shoutout).filter(Shoutout.id == shoutout_id).first()
-    if not s:
-        raise HTTPException(status_code=404, detail="Not found")
     db.delete(s)
     db.commit()
     return {"ok": True}
