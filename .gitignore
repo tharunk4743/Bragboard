@@ -1,0 +1,15 @@
+# Node
+node_modules/
+package-lock.json
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Database
+*.db
+
+# Environment files
+.env
+
