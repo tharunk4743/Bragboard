@@ -1,15 +1,12 @@
 from fastapi import APIRouter, HTTPException
 try:
-    # package import when used as a package
     from .schemas import SignupRequest, LoginRequest
     from . import store
 except Exception:
-    # fallback to module-level import when running from the server folder directly
     from schemas import SignupRequest, LoginRequest
     import store
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-
 
 @router.post("/signup", status_code=201)
 async def signup(payload: SignupRequest):
@@ -17,7 +14,6 @@ async def signup(payload: SignupRequest):
         raise HTTPException(status_code=400, detail="Email exists")
     user = store.create_user(payload.email, payload.full_name, payload.password, payload.role)
     return user
-
 
 @router.post("/login")
 async def login(payload: LoginRequest):
