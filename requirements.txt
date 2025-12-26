@@ -1,0 +1,20 @@
+fastapi>=0.95.0
+uvicorn[standard]>=0.18.2
+SQLAlchemy>=1.4
+pydantic>=1.10
+python-dotenv>=1.0.0
+python-multipart>=0.0.6
+
+# DB drivers (pick at least one depending on your DB)
+psycopg2-binary>=2.9.6   # Postgres (recommended for production)
+# aiosqlite is optional if you ever use async sqlite access; not required for SQLAlchemy sync
+# aiosqlite>=0.17.0
+
+# Security / auth helpers
+passlib[bcrypt]>=1.7.4   # for password hashing (recommended)
+
+# Migrations (optional but recommended for production)
+alembic>=1.10.0
+
+# Backwards-compat / typing helpers
+typing-extensions>=4.5.0
