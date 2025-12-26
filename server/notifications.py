@@ -3,6 +3,7 @@ try:
     from . import store
 except Exception:
     import store
+import uuid  # use standard import for uuid
 
 router = APIRouter(prefix="/notifications", tags=["notifications"])
 
@@ -31,9 +32,10 @@ async def create_notification(request: Request):
     user = _get_user_from_request(request)
     body = await request.json()
     target = body.get("user_id")
+    # only ADMIN can create for other users
     if user.get("role") != "ADMIN" and target != user["id"]:
         raise HTTPException(status_code=403, detail="Forbidden")
-    nid = str(__import__("uuid").uuid4())
+    nid = str(uuid.uuid4())
     note = {"id": nid, "user_id": target, "title": body.get("title"), "content": body.get("content"), "is_read": False}
     store.NOTIFICATIONS.append(note)
     return note
